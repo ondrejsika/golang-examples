@@ -5,6 +5,9 @@
 .vscode
 .idea
 
+# Go
+*.exe
+
 # Generic
 *.log
 *.backup
