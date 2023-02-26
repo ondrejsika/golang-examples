@@ -6,6 +6,9 @@
 !.vscode/settings.json
 .idea
 
+# Local
+*.local.sh
+
 # Go
 *.exe
 
