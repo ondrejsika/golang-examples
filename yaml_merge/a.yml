@@ -1,0 +1,7 @@
+text:
+  hello: Hello
+  world: World
+list:
+  - 1
+  - 2
+  - 3
