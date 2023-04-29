@@ -2,7 +2,7 @@ module external_slu_install_bin
 
 go 1.19
 
-require github.com/sikalabs/slu v0.66.0-dev-2
+require github.com/sikalabs/slu v0.66.0-dev-3
 
 require (
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
