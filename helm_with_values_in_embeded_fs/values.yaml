@@ -1,0 +1,3 @@
+TEXT: Values from embedded file
+replicas: 2
+image: sikalabs/hello-world-server:v0.6.0
