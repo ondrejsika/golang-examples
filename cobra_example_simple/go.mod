@@ -1,4 +1,4 @@
-module cobra_example
+module cobra_example_simple
 
 go 1.19
 
