@@ -3,7 +3,8 @@ package hello
 import (
 	"fmt"
 
-	"github.com/ondrejsika/golang-examples/viper_and_cobra_example_advanced/cmd/cmd/root"
+	"viper_and_cobra_example_advanced/cmd/root"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -30,6 +31,6 @@ func init() {
 		"Example message",
 	)
 	if message == "" {
-		Cmd.MarkFlagRequired("token")
+		Cmd.MarkFlagRequired("message")
 	}
 }

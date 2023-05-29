@@ -3,7 +3,6 @@ module viper_and_cobra_example_advanced
 go 1.19
 
 require (
-	github.com/ondrejsika/golang-examples v0.0.0-20230127224022-d78f5bd5e1f8
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 )
@@ -22,6 +21,7 @@ require (
 	github.com/subosito/gotenv v1.4.2 // indirect
 	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/text v0.5.0 // indirect
+	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
