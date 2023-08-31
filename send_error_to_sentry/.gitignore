@@ -1,0 +1,2 @@
+send_error_to_sentry
+.env
