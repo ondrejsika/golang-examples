@@ -8,7 +8,7 @@ import (
 func main() {
 	// Check for command-line arguments
 	if len(os.Args) < 3 {
-		fmt.Printf("Usage: %s <inputfile> <outputfile>", os.Args[0])
+		fmt.Printf("Usage: %s <inputfile> <outputfile>\n", os.Args[0])
 		os.Exit(1)
 	}
 
