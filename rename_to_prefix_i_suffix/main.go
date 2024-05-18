@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -13,7 +12,7 @@ func main() {
 	prefix := os.Args[2]
 
 	// Get a list of all files in the folder
-	files, err := ioutil.ReadDir(folderPath)
+	files, err := os.ReadDir(folderPath)
 	if err != nil {
 		fmt.Println(err)
 		return
