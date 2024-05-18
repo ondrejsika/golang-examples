@@ -2,8 +2,8 @@ package main
 
 import (
 	"embed"
+	"io"
 	"io/fs"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -24,9 +24,9 @@ func main() {
 		} else {
 			file, err := secFS.Open(filePath)
 			handleError(err)
-			fileContent, err := ioutil.ReadAll(file)
+			fileContent, err := io.ReadAll(file)
 			handleError(err)
-			err = ioutil.WriteFile(path.Join("out", filePath), fileContent, 0644)
+			err = os.WriteFile(path.Join("out", filePath), fileContent, 0644)
 			handleError(err)
 		}
 		return nil
