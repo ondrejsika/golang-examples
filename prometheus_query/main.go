@@ -27,7 +27,7 @@ func main() {
 	query := "rate(promhttp_metric_handler_requests_total{code=\"200\"}[1m])"
 
 	// Query Prometheus
-	result, err := queryClient.Query(context.Background(), query, time.Now())
+	result, _, err := queryClient.Query(context.Background(), query, time.Now())
 	if err != nil {
 		log.Fatalln(err)
 	}
