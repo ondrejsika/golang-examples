@@ -1,4 +1,4 @@
-module viper_example
+module viper_env_only
 
 go 1.19
 
