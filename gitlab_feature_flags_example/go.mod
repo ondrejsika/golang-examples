@@ -1,4 +1,4 @@
-module example
+module gitlab_feature_flags_example
 
 go 1.19
 
