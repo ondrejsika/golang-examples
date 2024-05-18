@@ -1,4 +1,4 @@
-module viper_example
+module get_images_for_env_for_values_yaml
 
 go 1.19
 
