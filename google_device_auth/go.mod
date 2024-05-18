@@ -1,4 +1,4 @@
-module google_drive_upload
+module google_device_auth
 
 go 1.21.3
 
