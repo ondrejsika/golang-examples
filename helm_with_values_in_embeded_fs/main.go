@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "embed"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -13,7 +12,7 @@ var valuesYaml []byte
 
 func main() {
 	var err error
-	tmpValuesFile, err := ioutil.TempFile("", "helm-values-yaml-")
+	tmpValuesFile, err := os.CreateTemp("", "helm-values-yaml-")
 	handleError(err)
 	defer os.Remove(tmpValuesFile.Name())
 	_, err = tmpValuesFile.Write(valuesYaml)
