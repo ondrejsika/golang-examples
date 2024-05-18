@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -12,14 +11,14 @@ import (
 func main() {
 	// Read the first YAML file
 	path1 := os.Args[1]
-	file1, err := ioutil.ReadFile(path1)
+	file1, err := os.ReadFile(path1)
 	if err != nil {
 		log.Fatalf("Failed to read %s: %v", path1, err)
 	}
 
 	// Read the second YAML file
 	path2 := os.Args[2]
-	file2, err := ioutil.ReadFile(path2)
+	file2, err := os.ReadFile(path2)
 	if err != nil {
 		log.Fatalf("Failed to read %s: %v", path2, err)
 	}
