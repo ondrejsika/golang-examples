@@ -1,4 +1,4 @@
-module hello_world
+module send_error_to_sentry
 
 go 1.19
 
