@@ -1,4 +1,4 @@
-module example
+module ssh_example_using_rig
 
 go 1.21.6
 
