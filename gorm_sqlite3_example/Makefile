@@ -1,3 +1,3 @@
 run:
-	rm db.sqlite3
+	rm -f db.sqlite3
 	go run main.go
