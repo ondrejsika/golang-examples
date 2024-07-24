@@ -1,4 +1,4 @@
-module gorm_examples
+module gorm_sqlite3_example
 
 go 1.19
 
