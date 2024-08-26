@@ -1,0 +1,140 @@
+package main
+
+// Created using ChatGPT: https://chatgpt.com/share/cc1cddbe-2351-4678-90f9-5a088be6eb70
+
+import (
+	"encoding/xml"
+	"flag"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+	"time"
+
+	"unicode"
+
+	"golang.org/x/text/runes"
+	"golang.org/x/text/unicode/norm"
+)
+
+type RSS struct {
+	Channel Channel `xml:"channel"`
+}
+
+type Channel struct {
+	Items []Item `xml:"item"`
+}
+
+type Item struct {
+	Title     string    `xml:"title"`
+	PubDate   string    `xml:"pubDate"`
+	Enclosure Enclosure `xml:"enclosure"`
+}
+
+type Enclosure struct {
+	URL string `xml:"url,attr"`
+}
+
+func sanitizeFilename(name string) string {
+	// Normalize the string and remove diacritics
+	t := norm.NFD.String(name)
+	t = runes.Remove(runes.In(unicode.Mn)).String(t)
+
+	// Replace spaces with underscores
+	t = strings.ReplaceAll(t, " ", "_")
+
+	// Remove special characters
+	reg := regexp.MustCompile("[^a-zA-Z0-9_.]+")
+	t = reg.ReplaceAllString(t, "")
+
+	return t
+}
+
+func formatPubDate(pubDate string) string {
+	// Parse the PubDate to time.Time
+	t, err := time.Parse(time.RFC1123Z, pubDate)
+	if err != nil {
+		fmt.Println("Error parsing publication date:", err)
+		return "unknown_date_"
+	}
+
+	// Format the date as yyyy-mm-dd
+	return t.Format("2006-01-02") + "_"
+}
+
+func downloadFile(url, filepath string) error {
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func main() {
+	// Load RSS URL and output directory from command-line arguments
+	rssURL := flag.String("rss", "", "URL of the podcast RSS feed")
+	outDir := flag.String("out", ".", "Output directory for MP3 files")
+	flag.Parse()
+
+	if *rssURL == "" {
+		fmt.Println("Please provide an RSS feed URL using the -rss flag.")
+		return
+	}
+
+	// Create the output directory if it doesn't exist
+	err := os.MkdirAll(*outDir, os.ModePerm)
+	if err != nil {
+		fmt.Println("Error creating output directory:", err)
+		return
+	}
+
+	resp, err := http.Get(*rssURL)
+	if err != nil {
+		fmt.Println("Error fetching RSS feed:", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	var rss RSS
+	err = xml.NewDecoder(resp.Body).Decode(&rss)
+	if err != nil {
+		fmt.Println("Error decoding RSS feed:", err)
+		return
+	}
+
+	for _, item := range rss.Channel.Items {
+		datePrefix := formatPubDate(item.PubDate)
+		filename := datePrefix + sanitizeFilename(item.Title) + ".mp3"
+		filepath := filepath.Join(*outDir, filename)
+
+		// Check if the file already exists
+		if _, err := os.Stat(filepath); err == nil {
+			fmt.Println("File already exists, skipping:", filepath)
+			continue
+		}
+
+		fmt.Println("Downloading:", item.Enclosure.URL)
+		err = downloadFile(item.Enclosure.URL, filepath)
+		if err != nil {
+			fmt.Println("Error downloading file:", err)
+		} else {
+			fmt.Println("Saved as:", filepath)
+		}
+	}
+}
