@@ -53,11 +53,33 @@ func sanitizeFilename(name string) string {
 	return t
 }
 
+func parsePubDate(pubDate string) time.Time {
+	// Define layouts to handle both zero-padded and non-zero-padded days
+	layouts := []string{
+		"Mon, 02 Jan 2006 15:04:05 MST", // zero-padded day
+		"Mon, 2 Jan 2006 15:04:05 MST",  // non-zero-padded day
+	}
+
+	var t time.Time
+	var err error
+
+	// Try parsing with each layout
+	for _, layout := range layouts {
+		t, err = time.Parse(layout, pubDate)
+		if err == nil {
+			return t
+		}
+	}
+
+	// If parsing fails, log the error and return the zero value of time.Time
+	fmt.Println("Error parsing publication date:", err)
+	return time.Time{}
+}
+
 func formatPubDate(pubDate string) string {
-	// Parse the PubDate to time.Time
-	t, err := time.Parse(time.RFC1123Z, pubDate)
-	if err != nil {
-		fmt.Println("Error parsing publication date:", err)
+	// Parse the PubDate using the parsePubDate function
+	t := parsePubDate(pubDate)
+	if t.IsZero() {
 		return "unknown_date_"
 	}
 
