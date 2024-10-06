@@ -56,8 +56,10 @@ func sanitizeFilename(name string) string {
 func parsePubDate(pubDate string) time.Time {
 	// Define layouts to handle both zero-padded and non-zero-padded days
 	layouts := []string{
-		"Mon, 02 Jan 2006 15:04:05 MST", // zero-padded day
-		"Mon, 2 Jan 2006 15:04:05 MST",  // non-zero-padded day
+		"Mon, 02 Jan 2006 15:04:05 MST",   // zero-padded day
+		"Mon, 2 Jan 2006 15:04:05 MST",    // non-zero-padded day
+		"Mon, 02 Jan 2006 15:04:05 +0200", // zero-padded day with timezone
+		"Mon, 2 Jan 2006 15:04:05 +0200",  // non-zero-padded day with timezone
 	}
 
 	var t time.Time
