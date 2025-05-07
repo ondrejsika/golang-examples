@@ -6,6 +6,9 @@
 !.vscode/settings.json
 .idea
 
+# env
+.env
+
 # Local
 *.local.sh
 
