@@ -22,7 +22,7 @@ func main() {
 		log.Fatalf("Failed to get last chat ID: %v", err)
 	}
 	fmt.Println(chatID)
-	sendMessage(botToken, int(chatID), fmt.Sprintf("%d", chatID))
+	sendMessage(botToken, int(chatID), fmt.Sprintf("`%d`", chatID))
 }
 
 func getLastChatID(botToken string) (int64, error) {
@@ -70,8 +70,9 @@ func getLastChatID(botToken string) (int64, error) {
 func sendMessage(botToken string, chatID int, message string) error {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", botToken)
 	body, _ := json.Marshal(map[string]string{
-		"chat_id": fmt.Sprintf("%d", chatID),
-		"text":    message,
+		"chat_id":    fmt.Sprintf("%d", chatID),
+		"text":       message,
+		"parse_mode": "MarkdownV2",
 	})
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 	if err != nil {
