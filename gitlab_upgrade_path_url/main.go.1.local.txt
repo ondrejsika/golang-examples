@@ -1,0 +1,35 @@
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"log"
+	"os/exec"
+	"regexp"
+)
+
+func main() {
+	// Run "apt list --installed gitlab-ce"
+	cmd := exec.Command("apt", "list", "--installed", "gitlab-ce")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	if err := cmd.Run(); err != nil {
+		log.Fatalln("Error executing command:", err)
+	}
+
+	// Example output:
+	// gitlab-ce/unknown,now 18.0.1 amd64 [installed]
+
+	// Extract version with regex
+	re := regexp.MustCompile(`gitlab-ce/.*,now ([0-9]+\.[0-9]+\.[0-9]+)`)
+	matches := re.FindStringSubmatch(out.String())
+	if len(matches) < 2 {
+		log.Fatalln("Could not find version")
+		return
+	}
+	version := matches[1]
+
+	// Build URL
+	url := fmt.Sprintf("https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/?current=%s&edition=ce", version)
+	fmt.Println(url)
+}
