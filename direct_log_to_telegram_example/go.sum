@@ -1,0 +1,4 @@
+github.com/sikalabs/slu v0.92.0 h1:IvQE1FlKEVBR+OGA3cGTOrNCVZE1+M7vDYN5yqTRdE0=
+github.com/sikalabs/slu v0.92.0/go.mod h1:s/F0CcbbpuQKRZtI3XlF+cGNVSAT8N71dhYjf/ruwLI=
+github.com/sikalabsx/direct-log-to-telegram v0.0.0-20251021195343-a0baf834397d h1:Y8Ga4ZVYlIiRN/GHbSzw1mEaK1lVbh+jwtrWNGbKEuU=
+github.com/sikalabsx/direct-log-to-telegram v0.0.0-20251021195343-a0baf834397d/go.mod h1:4O+sDPFpwOxwRX62DWbM34klhnGI9VMHIbix3bzugYM=
