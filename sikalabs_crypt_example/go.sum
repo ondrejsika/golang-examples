@@ -1,0 +1,4 @@
+github.com/sikalabs/sikalabs-crypt-go v0.0.0-20251105165509-07a7607e5e7b h1:WZFwWK+5zk57L7ya+WilDSVFDHR0oyDPKGkg4TyTZq8=
+github.com/sikalabs/sikalabs-crypt-go v0.0.0-20251105165509-07a7607e5e7b/go.mod h1:TrthX6be5utClxOieSRN8T3DOlFZ1oaK/9Ye2oCFaFg=
+golang.org/x/crypto v0.43.0 h1:dduJYIi3A3KOfdGOHX8AVZ/jGiyPa3IbBozJ5kNuE04=
+golang.org/x/crypto v0.43.0/go.mod h1:BFbav4mRNlXJL4wNeejLpWxB7wMbc79PdRGhWKncxR0=
