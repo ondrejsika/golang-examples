@@ -8,13 +8,13 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"log"
 
 	"golang.org/x/crypto/pbkdf2"
 )
 
-func main() {
-	password := "password"
-	plaintext := []byte(`            ___________________
+const PASSWORD = "password"
+const TEXT = `            ___________________
            < This is encrypted >
             -------------------
            /
@@ -25,37 +25,46 @@ func main() {
      \| /_/  \ /\__/
       ||      \\
       ||      //
-      /|     /|`)
+      /|     /|`
 
+func main() {
+	encrypted, err := encrypt(PASSWORD, TEXT)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(encrypted)
+}
+
+func encrypt(password, text string) (string, error) {
 	// Generate a random salt (16 bytes is standard)
 	salt := make([]byte, 16)
 	if _, err := io.ReadFull(rand.Reader, salt); err != nil {
-		panic(err)
+		return "", err
 	}
 
 	key := pbkdf2.Key([]byte(password), salt, 100000, 32, sha256.New)
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	aesGCM, err := cipher.NewGCM(block)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	nonce := make([]byte, aesGCM.NonceSize())
 	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		panic(err)
+		return "", err
 	}
 
-	ciphertext := aesGCM.Seal(nil, nonce, plaintext, nil)
+	ciphertext := aesGCM.Seal(nil, nonce, []byte(text), nil)
 
 	// Structure: salt + nonce + ciphertext
 	full := append(salt, nonce...)
 	full = append(full, ciphertext...)
 	encoded := base64.StdEncoding.EncodeToString(full)
 
-	fmt.Println("Encrypted (base64):", encoded)
+	return encoded, nil
 }

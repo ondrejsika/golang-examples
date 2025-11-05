@@ -12,21 +12,29 @@ import (
 )
 
 // Password to derive key
-var password = "password"
+const PASSWORD = "password"
 
 // Encrypted data: base64-encoded (salt + nonce + ciphertext)
-var encryptedDataBase64 = "DkhI5ZBYiASi/16kvpFCpL04Iv6ZkfV50nOixVTorrXDuc0d7wfz0DtCWq/vjhnP3bYLDfHCatUJ7JumOSM1n10IzYarJg1uAvv/lgkDElGNSQZzZ3qlUTphyYXReImjFm1DJCzg5Fbjin5Bp9l3NB0h024UUbYLAa5XUWG/QuDR3SC9KU91VBvIRQ5uCXPguUR6Biiu42KfPrkvZtJPBO/FAJQmZZ5Vd22pHTK++i50JpR1+dAQmCpEMwpUlYdt5okjGICu3qeeJqy6wlc1BhpVc8bzZ7wKUyPE3WfgWHcnVrfpvKq2ZouDa4AhCzeKNTVIpSbTxjmX5wzuCaSVk+bWdbM+1vgsWXKq9g1/pVufDNGMeg=="
+const ENCRYPTED = "TQcjWsRFpxJMpkmvPkQ5HjExITafJh1FJNpjvXwci/CBs9T9PbyEvotcafu1KoYjJzjMpyJPwVXRRodY/27I2h+lNBrLG4HjwmbnVuHwyav09xVbY931btwaGdkSVsWNi7oSQlGYVpQkNZabma2bhZj8gPaPVrngi0OdddNsyNb7igESnhK3pPkv610YfucsurJcBDYB1kb1jy+Y1+I7r4LkgZDrCZVxeXfqVOzFfm7Xq419DiriR3G4TDChtz9KO2e4wKt9szHS0rHvam4vRHo6ZAS/ex36XeTj2QKDGwsPGK1E8I+914z88SOhmUqBguaEXasrrrNb6xj37mhOIT1HmQbQvR4C1gfWzC9IUvl1/ffoXA=="
 
 func main() {
-	encryptedData, err := base64.StdEncoding.DecodeString(encryptedDataBase64)
+	text, err := decrypt(PASSWORD, ENCRYPTED)
 	if err != nil {
-		log.Fatalf("Failed to decode encrypted data: %v", err)
+		log.Fatalln(err)
+	}
+	fmt.Println(text)
+}
+
+func decrypt(password, encryptedBase64 string) (string, error) {
+	encryptedData, err := base64.StdEncoding.DecodeString(encryptedBase64)
+	if err != nil {
+		return "", err
 	}
 
 	// Extract salt (first 16 bytes)
 	saltSize := 16
 	if len(encryptedData) < saltSize {
-		log.Fatal("Encrypted data too short to contain salt")
+		return "", fmt.Errorf("encrypted data too short")
 	}
 	salt := encryptedData[:saltSize]
 	remaining := encryptedData[saltSize:]
@@ -36,25 +44,25 @@ func main() {
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		log.Fatalf("Failed to create cipher: %v", err)
+		return "", err
 	}
 
 	aesGCM, err := cipher.NewGCM(block)
 	if err != nil {
-		log.Fatalf("Failed to create GCM: %v", err)
+		return "", err
 	}
 
 	nonceSize := aesGCM.NonceSize()
 	if len(remaining) < nonceSize {
-		log.Fatal("Ciphertext too short")
+		return "", fmt.Errorf("ciphertext too short")
 	}
 
 	nonce, ciphertext := remaining[:nonceSize], remaining[nonceSize:]
 
-	plaintext, err := aesGCM.Open(nil, nonce, ciphertext, nil)
+	text, err := aesGCM.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		log.Fatalf("Decryption failed: %v", err)
+		return "", err
 	}
 
-	fmt.Println(string(plaintext))
+	return string(text), nil
 }
