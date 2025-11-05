@@ -7,26 +7,32 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
+
+	"golang.org/x/crypto/pbkdf2"
 )
 
 // Password to derive key
 var password = "password"
 
-// Encrypted data: base64-encoded (nonce + ciphertext)
-var encryptedDataBase64 = "Af7diD5Tz4EfEHNkPeE/XHRQlGqzY2OAXMzyJ3Gx5MkRW8X4yaXna1KdNyChybqMFGzA0S2xuMbLK6GLFbP8s9mLoYV6wH8dLxFez7mUgIVw+vR1/Ea4ACY9xWOrUB3VWVPXQpe0YfRCp327Gp1yxMmYNWIXqS6Huun5HDAyGAl9I6dGloaJpmm/+mgORay7xX4BMWaAaFHpYq7O1AzVsEA/f+R4P7OaqeogKsEACLHt3EIhsDv4YVc++3CaZeytEDC++4gFvk1f7RIrB++nUA27w7UVRM6AjvuD0wZEwYyP6CQM6ckoQpCw45RVdNVwmjwSLKcTRplMtPAorCKydZ+c+64M"
-
-func deriveKey(password string) []byte {
-	hash := sha256.Sum256([]byte(password))
-	return hash[:]
-}
+// Encrypted data: base64-encoded (salt + nonce + ciphertext)
+var encryptedDataBase64 = "DkhI5ZBYiASi/16kvpFCpL04Iv6ZkfV50nOixVTorrXDuc0d7wfz0DtCWq/vjhnP3bYLDfHCatUJ7JumOSM1n10IzYarJg1uAvv/lgkDElGNSQZzZ3qlUTphyYXReImjFm1DJCzg5Fbjin5Bp9l3NB0h024UUbYLAa5XUWG/QuDR3SC9KU91VBvIRQ5uCXPguUR6Biiu42KfPrkvZtJPBO/FAJQmZZ5Vd22pHTK++i50JpR1+dAQmCpEMwpUlYdt5okjGICu3qeeJqy6wlc1BhpVc8bzZ7wKUyPE3WfgWHcnVrfpvKq2ZouDa4AhCzeKNTVIpSbTxjmX5wzuCaSVk+bWdbM+1vgsWXKq9g1/pVufDNGMeg=="
 
 func main() {
-	key := deriveKey(password)
-
 	encryptedData, err := base64.StdEncoding.DecodeString(encryptedDataBase64)
 	if err != nil {
 		log.Fatalf("Failed to decode encrypted data: %v", err)
 	}
+
+	// Extract salt (first 16 bytes)
+	saltSize := 16
+	if len(encryptedData) < saltSize {
+		log.Fatal("Encrypted data too short to contain salt")
+	}
+	salt := encryptedData[:saltSize]
+	remaining := encryptedData[saltSize:]
+
+	// Derive key using salt
+	key := pbkdf2.Key([]byte(password), salt, 100000, 32, sha256.New)
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -39,11 +45,11 @@ func main() {
 	}
 
 	nonceSize := aesGCM.NonceSize()
-	if len(encryptedData) < nonceSize {
+	if len(remaining) < nonceSize {
 		log.Fatal("Ciphertext too short")
 	}
 
-	nonce, ciphertext := encryptedData[:nonceSize], encryptedData[nonceSize:]
+	nonce, ciphertext := remaining[:nonceSize], remaining[nonceSize:]
 
 	plaintext, err := aesGCM.Open(nil, nonce, ciphertext, nil)
 	if err != nil {

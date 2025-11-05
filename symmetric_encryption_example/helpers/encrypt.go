@@ -8,16 +8,12 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-)
 
-func deriveKey(password string) []byte {
-	hash := sha256.Sum256([]byte(password))
-	return hash[:]
-}
+	"golang.org/x/crypto/pbkdf2"
+)
 
 func main() {
 	password := "password"
-	key := deriveKey(password)
 	plaintext := []byte(`            ___________________
            < This is encrypted >
             -------------------
@@ -30,6 +26,14 @@ func main() {
       ||      \\
       ||      //
       /|     /|`)
+
+	// Generate a random salt (16 bytes is standard)
+	salt := make([]byte, 16)
+	if _, err := io.ReadFull(rand.Reader, salt); err != nil {
+		panic(err)
+	}
+
+	key := pbkdf2.Key([]byte(password), salt, 100000, 32, sha256.New)
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -47,7 +51,10 @@ func main() {
 	}
 
 	ciphertext := aesGCM.Seal(nil, nonce, plaintext, nil)
-	full := append(nonce, ciphertext...)
+
+	// Structure: salt + nonce + ciphertext
+	full := append(salt, nonce...)
+	full = append(full, ciphertext...)
 	encoded := base64.StdEncoding.EncodeToString(full)
 
 	fmt.Println("Encrypted (base64):", encoded)
