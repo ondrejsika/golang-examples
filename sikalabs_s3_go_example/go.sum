@@ -38,6 +38,8 @@ github.com/sikalabs-go/sikalabs-s3-go v0.0.0-20251106021616-24cd0a1ca9fb h1:3pHw
 github.com/sikalabs-go/sikalabs-s3-go v0.0.0-20251106021616-24cd0a1ca9fb/go.mod h1:4aqoSA4Vo1Uxe/feLB1roJGcltpLXg6lmtv8+g9IBTQ=
 github.com/sikalabs-go/sikalabs-s3-go v0.0.0-20251106022946-9f600fb33ea3 h1:bFHYWSCWDYdH9Eou7RqDEU6LhQJoDHzednWll6QZv9g=
 github.com/sikalabs-go/sikalabs-s3-go v0.0.0-20251106022946-9f600fb33ea3/go.mod h1:wuuKPhIDu67fBN+e0SzOe9FKKW/SZEHKT5qNORuKnaU=
+github.com/sikalabs-go/sikalabs-s3-go v0.0.0-20251106023739-454937088a9c h1:J+2kkQG/YUT0gK8IeD5KPbeietG4M+gbfManbA5Grgs=
+github.com/sikalabs-go/sikalabs-s3-go v0.0.0-20251106023739-454937088a9c/go.mod h1:wuuKPhIDu67fBN+e0SzOe9FKKW/SZEHKT5qNORuKnaU=
 github.com/sikalabs/sikalabs-crypt-go v0.0.0-20251105174759-2ff0fb3fb552 h1:EiLCh0kiHlgJXz1TKD8mfy3qFgnkFiX9TthlKHO/U8Y=
 github.com/sikalabs/sikalabs-crypt-go v0.0.0-20251105174759-2ff0fb3fb552/go.mod h1:TrthX6be5utClxOieSRN8T3DOlFZ1oaK/9Ye2oCFaFg=
 github.com/sikalabsx/sikalabs-encrypted-go v0.0.0-20251106012324-fa849aeac6ab h1:mkDjj9oKbT44LwhtpIt+EgZo5yGDrdpaWVF5AeXfyi8=

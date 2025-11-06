@@ -3,7 +3,7 @@ module sikalabs_s3_go_example
 go 1.25.3
 
 require (
-	github.com/sikalabs-go/sikalabs-s3-go v0.0.0-20251106022946-9f600fb33ea3
+	github.com/sikalabs-go/sikalabs-s3-go v0.0.0-20251106023739-454937088a9c
 	github.com/sikalabsx/sikalabs-encrypted-go v0.0.0-20251106012324-fa849aeac6ab
 )
 
