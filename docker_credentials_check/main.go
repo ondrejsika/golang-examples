@@ -2,10 +2,13 @@ package main
 
 import (
 	"context"
-	"flag"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
+	"sort"
 	"time"
 
 	"github.com/google/go-containerregistry/pkg/authn"
@@ -13,20 +16,60 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/remote/transport"
 )
 
-func main() {
-	flag.Parse()
-	if flag.NArg() < 1 {
-		fmt.Println("Usage: docker_credentials_check <registry>")
-		return
-	}
-	registry := flag.Arg(0)
+type dockerConfig struct {
+	Auths map[string]json.RawMessage `json:"auths"`
+}
 
-	err := checkRegistry(registry)
+func main() {
+	registries, err := getRegistriesFromConfig()
 	if err != nil {
-		fmt.Printf("❌ Error: %v\n", err)
-	} else {
-		fmt.Println("✅ Success: Valid credentials")
+		fmt.Printf("Error: %v\n", err)
+		os.Exit(1)
 	}
+
+	if len(registries) == 0 {
+		fmt.Println("No registries found in docker config")
+		os.Exit(0)
+	}
+
+	for _, registry := range registries {
+		err := checkRegistry(registry)
+		if err != nil {
+			fmt.Printf("❌ %s: %v\n", registry, err)
+		} else {
+			fmt.Printf("✅ %s: Valid credentials\n", registry)
+		}
+	}
+}
+
+func getRegistriesFromConfig() ([]string, error) {
+	configDir := os.Getenv("DOCKER_CONFIG")
+	if configDir == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return nil, fmt.Errorf("getting home directory: %w", err)
+		}
+		configDir = filepath.Join(home, ".docker")
+	}
+
+	configPath := filepath.Join(configDir, "config.json")
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		return nil, fmt.Errorf("reading %s: %w", configPath, err)
+	}
+
+	var cfg dockerConfig
+	if err := json.Unmarshal(data, &cfg); err != nil {
+		return nil, fmt.Errorf("parsing %s: %w", configPath, err)
+	}
+
+	registries := make([]string, 0, len(cfg.Auths))
+	for reg := range cfg.Auths {
+		registries = append(registries, reg)
+	}
+	sort.Strings(registries)
+
+	return registries, nil
 }
 
 func checkRegistry(registry string) error {
