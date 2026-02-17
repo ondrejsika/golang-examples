@@ -7,12 +7,17 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	// mon.yaml schema
-	MON_NOTIFICATIONS_EMAIL_SMTP_HOST = "notifications.mail.smtp_host"
-	MON_NOTIFICATIONS_EMAIL_SMTP_PORT = "notifications.mail.smtp_port"
-	MON_NOTIFICATIONS_TELEGRAM_TOKEN  = "notifications.telegram.token"
-)
+type Config struct {
+	Notifications struct {
+		Mail struct {
+			SmtpHost string `mapstructure:"smtp_host"`
+			SmtpPort int    `mapstructure:"smtp_port"`
+		} `mapstructure:"mail"`
+		Telegram struct {
+			Token string `mapstructure:"token"`
+		} `mapstructure:"telegram"`
+	} `mapstructure:"notifications"`
+}
 
 func main() {
 	viper.AddConfigPath(".")
@@ -22,18 +27,17 @@ func main() {
 
 	viper.SetEnvPrefix("mon")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
 
-	viper.BindEnv(MON_NOTIFICATIONS_EMAIL_SMTP_HOST)
-	viper.BindEnv(MON_NOTIFICATIONS_EMAIL_SMTP_PORT)
-	viper.BindEnv(MON_NOTIFICATIONS_TELEGRAM_TOKEN)
+	// Unmarshal into struct
+	var cfg Config
+	if err := viper.Unmarshal(&cfg); err != nil {
+		fmt.Printf("error unmarshaling config: %v\n", err)
+		return
+	}
 
-	fmt.Println("notifications.mail.smtp_host")
-	fmt.Println(viper.GetString(MON_NOTIFICATIONS_EMAIL_SMTP_HOST))
-	fmt.Println()
-	fmt.Println("notifications.mail.smtp_port")
-	fmt.Println(viper.GetString(MON_NOTIFICATIONS_EMAIL_SMTP_PORT))
-	fmt.Println()
-	fmt.Println("notifications.telegram.token")
-	fmt.Println(viper.GetString(MON_NOTIFICATIONS_TELEGRAM_TOKEN))
-	fmt.Println()
+	fmt.Println("Struct:")
+	fmt.Printf("  smtp_host: %s\n", cfg.Notifications.Mail.SmtpHost)
+	fmt.Printf("  smtp_port: %d\n", cfg.Notifications.Mail.SmtpPort)
+	fmt.Printf("  telegram:  %s\n", cfg.Notifications.Telegram.Token)
 }
