@@ -7,6 +7,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	// mon.yaml schema
+	MON_NOTIFICATIONS_EMAIL_SMTP_HOST = "notifications.mail.smtp_host"
+	MON_NOTIFICATIONS_EMAIL_SMTP_PORT = "notifications.mail.smtp_port"
+	MON_NOTIFICATIONS_TELEGRAM_TOKEN  = "notifications.telegram.token"
+)
+
 func main() {
 	viper.AddConfigPath(".")
 	viper.SetConfigName("mon")
@@ -15,11 +22,18 @@ func main() {
 
 	viper.SetEnvPrefix("mon")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	viper.BindEnv("notifications.mail.smtp_host")
-	viper.BindEnv("notifications.mail.smtp_port")
-	viper.BindEnv("notifications.telegram.token")
 
-	fmt.Println("notifications.mail.smtp_host", viper.GetString("notifications.mail.smtp_host"))
-	fmt.Println("notifications.mail.smtp_port", viper.GetString("notifications.mail.smtp_port"))
-	fmt.Println("notifications.telegram.token", viper.GetString("notifications.telegram.token"))
+	viper.BindEnv(MON_NOTIFICATIONS_EMAIL_SMTP_HOST)
+	viper.BindEnv(MON_NOTIFICATIONS_EMAIL_SMTP_PORT)
+	viper.BindEnv(MON_NOTIFICATIONS_TELEGRAM_TOKEN)
+
+	fmt.Println("notifications.mail.smtp_host")
+	fmt.Println(viper.GetString(MON_NOTIFICATIONS_EMAIL_SMTP_HOST))
+	fmt.Println()
+	fmt.Println("notifications.mail.smtp_port")
+	fmt.Println(viper.GetString(MON_NOTIFICATIONS_EMAIL_SMTP_PORT))
+	fmt.Println()
+	fmt.Println("notifications.telegram.token")
+	fmt.Println(viper.GetString(MON_NOTIFICATIONS_TELEGRAM_TOKEN))
+	fmt.Println()
 }
