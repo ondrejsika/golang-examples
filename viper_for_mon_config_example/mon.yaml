@@ -1,0 +1,6 @@
+notifications:
+  mail:
+    smtp_host: smtp.sikademo.com
+    smtp_port: 25
+  telegram:
+    token: token-telegram-file...
