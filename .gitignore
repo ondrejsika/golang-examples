@@ -11,6 +11,7 @@
 
 # Local
 *.local.sh
+*.local.txt
 Makefile.local.mk
 
 # Go
